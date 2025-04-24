@@ -10,6 +10,10 @@ public class RainbowTable {
     private static final int CHAIN_AMOUNT = 2000;
     private static final int CHAIN_ELEMENTS = 2000;
 
+    public static void main(String[] args) {
+        Map<String, String> rainbowTable = generateRainbowTable();
+    }
+
     public static Map<String, String> generateRainbowTable() {
         // HashMap in der wir jeweils den Start und Endwert einer Kette speichern
         HashMap<String, String> rainbowTable = new HashMap<>();
