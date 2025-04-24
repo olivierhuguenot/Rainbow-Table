@@ -27,7 +27,7 @@ public class RainbowTable {
             String lastPassword = firstPassword;
 
             // 2000 Kettenelemente generieren
-            for(int j = 0; j < CHAIN_ELEMENTS; i++) {
+            for(int j = 0; j < CHAIN_ELEMENTS; j++) {
                 String hashedValue = hashFunctionMD5(lastPassword);
                 lastPassword = reduceFunction(hashedValue);
             }
