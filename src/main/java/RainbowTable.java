@@ -32,7 +32,7 @@ public class RainbowTable {
             // 2000 Kettenelemente generieren
             for(int j = 0; j < CHAIN_ELEMENTS; j++) {
                 String hashedValue = hashFunctionMD5(lastPassword);
-                lastPassword = reduceFunction(hashedValue);
+                lastPassword = reduceFunction(hashedValue, j);
                 if(j % 100 == 0) {
                     System.out.println("Element: " + j);
                     System.out.println("Hashed Value: " + hashedValue);
@@ -71,7 +71,7 @@ public class RainbowTable {
     }
 
 
-    private static String reduceFunction(String hashedInput) {
+    private static String reduceFunction(String hashedInput, int round) {
         // TODO
         return hashedInput;
     }
