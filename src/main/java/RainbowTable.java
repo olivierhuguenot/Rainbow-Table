@@ -25,11 +25,17 @@ public class RainbowTable {
         for(int i = 0; i < CHAIN_AMOUNT; i++) {
             String firstPassword = password;
             String lastPassword = firstPassword;
+            System.out.println("-------- CHAIN: " + i + " --------");
 
             // 2000 Kettenelemente generieren
             for(int j = 0; j < CHAIN_ELEMENTS; j++) {
                 String hashedValue = hashFunctionMD5(lastPassword);
                 lastPassword = reduceFunction(hashedValue);
+                if(j % 100 == 0) {
+                    System.out.println("Element: " + j);
+                    System.out.println("Hashed Value: " + hashedValue);
+                    System.out.println("Reduced Password: " + lastPassword);
+                }
             }
 
             // Das Erste und Letzte Passwort einer Kette wird in den Rainbowtable gespeichert
@@ -65,7 +71,7 @@ public class RainbowTable {
 
     private static String reduceFunction(String hashedInput) {
         // TODO
-        return null;
+        return hashedInput;
     }
 
 
