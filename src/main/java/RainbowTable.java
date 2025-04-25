@@ -38,6 +38,7 @@ public class RainbowTable {
 
             // Für die nächste Kette benötigen wir das nächste Passwort (+1)
             password = nextPassword(password);
+            System.out.println("Next Password: " + password);
         }
 
         return rainbowTable;
@@ -69,7 +70,31 @@ public class RainbowTable {
 
 
     private static String nextPassword(String password) {
-        // TODO
-        return null;
+        char[] pwCharArray = password.toCharArray();
+
+        for (int i = pwCharArray.length - 1; i >= 0; i--) {
+            // Index des aktuellen Chars im Z Array finden
+            int index = indexOfCharinArrayZ(pwCharArray[i]);
+            // Fall es nicht der letzte Char im Alphabet ist, wird er inkrementiert und ersetzt
+            // 0000000, 0000001, ..., 0000009, 000000a, 000000b, ..., 000000z, 0000010
+            if (index < Z.length - 1) {
+                pwCharArray[i] = Z[index + 1];
+                return new String(pwCharArray);
+            } else {
+                pwCharArray[i] = Z[0];
+            }
+        }
+        return new String(pwCharArray);
     }
+
+    private static int indexOfCharinArrayZ(char c) {
+        for (int i = 0; i < Z.length; i++) {
+            if (Z[i] == c) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+
 }
