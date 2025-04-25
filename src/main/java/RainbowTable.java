@@ -12,6 +12,8 @@ public class RainbowTable {
 
     public static void main(String[] args) {
         Map<String, String> rainbowTable = generateRainbowTable();
+        String wantedHash = "1d56a37fb6b08aa709fe90e12ca59e12";
+        String password = findHash(wantedHash);
     }
 
     public static Map<String, String> generateRainbowTable() {
@@ -100,6 +102,11 @@ public class RainbowTable {
             }
         }
         return -1;
+    }
+
+    private static String findHash(String hashValue) {
+        // TODO
+        return "";
     }
 
 
