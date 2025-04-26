@@ -27,17 +27,26 @@ public class RainbowTable {
         for(int i = 0; i < CHAIN_AMOUNT; i++) {
             String firstPassword = password;
             String lastPassword = firstPassword;
-            System.out.println("-------- CHAIN: " + i + " --------");
+            if (i == 0) {
+                System.out.println("-------- CHAIN: " + i+1 + " --------");
+            }
 
             // 2000 Kettenelemente generieren
             for(int j = 0; j < CHAIN_ELEMENTS; j++) {
                 String hashedValue = hashFunctionMD5(lastPassword);
                 lastPassword = reduceFunction(hashedValue, j);
+                if (i == 0) {
+                    System.out.println("Chain-Element: " + j+1);
+                    System.out.println("Hashed Value: " + hashedValue);
+                    System.out.println("Reduced Password: " + lastPassword);
+                }
+                /*
                 if(j % 100 == 0) {
                     System.out.println("Element: " + j);
                     System.out.println("Hashed Value: " + hashedValue);
                     System.out.println("Reduced Password: " + lastPassword);
                 }
+                 */
             }
 
             // Das Erste und Letzte Passwort einer Kette wird in den Rainbowtable gespeichert
@@ -70,7 +79,6 @@ public class RainbowTable {
         }
     }
 
-
     private static String reduceFunction(String hashedInput, int round) {
         // Z ist die Menge der Ziffern 1-9 und alle Kleinbuchstaben -> |Z| = 36
         // L ist die Länge der Passwörter also 7
@@ -78,7 +86,7 @@ public class RainbowTable {
         // Stufe entspricht der Variable round
 
         // Stufe wird zum Hashwert addiert
-        BigInteger h = new BigInteger(hashedInput);
+        BigInteger h = new BigInteger(hashedInput, 16);
         h = h.add(BigInteger.valueOf(round));
 
         // Jedes Zeichen des Outputs wird durch mod und div mit PASSWORD_LENGTH ermittelt und dann in umgekehrter Reihenfolge zurückgegeben
@@ -89,7 +97,9 @@ public class RainbowTable {
             resultString[i] = Z[ri];
             h = h.divide(BigInteger.valueOf(Z.length));
         }
-        return new String(resultString);
+        String temp = new String(resultString);
+        String reversed = new StringBuilder(temp).reverse().toString();
+        return reversed;
     }
 
 
