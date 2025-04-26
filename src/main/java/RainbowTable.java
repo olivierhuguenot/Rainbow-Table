@@ -1,9 +1,7 @@
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class RainbowTable {
@@ -16,11 +14,11 @@ public class RainbowTable {
         Map<String, String> rainbowTable = generateRainbowTable();
         String wantedHash = "1d56a37fb6b08aa709fe90e12ca59e12";
         String password = findHash(wantedHash, rainbowTable);
-        System.out.println("Wanted pw: " + password);
+        System.out.println("Wanted password: " + password);
     }
 
     public static Map<String, String> generateRainbowTable() {
-        // HashMap in der wir jeweils den Start und Endwert einer Kette speichern
+        // HashMap in der wir jeweils den Start und Endwert einer Kette speichern. Achtung bei uns sind die keys die Enwerte und die values die Startwerte
         HashMap<String, String> rainbowTable = new HashMap<>();
 
         // Erstes mögliches Passwort
@@ -30,17 +28,17 @@ public class RainbowTable {
         for (int i = 0; i < CHAIN_AMOUNT; i++) {
             String firstPassword = password;
             String lastPassword = firstPassword;
-            /*
+            /* Gibt die Kettennummern auf der Konsole aus
             if (i == 0) {
                 System.out.println("-------- CHAIN: " + i+1 + " --------");
             }
              */
 
-            // 2000 Kettenelemente generieren
+            // 2000 Kettenelemente pro Kette generieren
             for (int j = 0; j < CHAIN_ELEMENTS; j++) {
                 String hashedValue = hashFunctionMD5(lastPassword);
                 lastPassword = reduceFunction(hashedValue, j);
-                /*
+                /* Gibt Kettenelemennummer, Hashwert und Reduktionswert auf Konsole aus
                 if (i == 0) {
                     System.out.println("Chain-Element: " + j+1);
                     System.out.println("Hashed Value: " + hashedValue);
@@ -66,10 +64,8 @@ public class RainbowTable {
             System.out.println("Next Password: " + password);
              */
         }
-
         return rainbowTable;
     }
-
 
     private static String hashFunctionMD5(String input) {
         try {
@@ -82,7 +78,6 @@ public class RainbowTable {
             // Gehashter Wert in Hexidezimal Darstellung umwandeln
             String hashedValue = String.format("%032x", new BigInteger(1, hashedValueInBytes));
             return hashedValue;
-
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
@@ -111,7 +106,6 @@ public class RainbowTable {
         return reversed;
     }
 
-
     private static String nextPassword(String password) {
         char[] pwCharArray = password.toCharArray();
 
@@ -139,7 +133,6 @@ public class RainbowTable {
         return -1;
     }
 
-
     private static String findHash(String hashValue, Map<String, String> rainbowTable) {
         // Beginn bei letzter Stufe (1999) dann rückwärts jede Stufe durchgehen
         int lastColumn = CHAIN_ELEMENTS - 1;
@@ -162,6 +155,7 @@ public class RainbowTable {
                         reduceValue = reduceFunction(tempHash, k);
                     }
                 }
+                // Wenn r kein Endwert ist wird gehasht für die nächste Stufe
                 h = hashFunctionMD5(r);
             }
         }
