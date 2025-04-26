@@ -1,7 +1,9 @@
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class RainbowTable {
@@ -13,7 +15,8 @@ public class RainbowTable {
     public static void main(String[] args) {
         Map<String, String> rainbowTable = generateRainbowTable();
         String wantedHash = "1d56a37fb6b08aa709fe90e12ca59e12";
-        String password = findHash(wantedHash);
+        String password = findHash(wantedHash, rainbowTable);
+        System.out.println("Wanted pw: " + password);
     }
 
     public static Map<String, String> generateRainbowTable() {
@@ -27,19 +30,23 @@ public class RainbowTable {
         for(int i = 0; i < CHAIN_AMOUNT; i++) {
             String firstPassword = password;
             String lastPassword = firstPassword;
+            /*
             if (i == 0) {
                 System.out.println("-------- CHAIN: " + i+1 + " --------");
             }
+             */
 
             // 2000 Kettenelemente generieren
             for(int j = 0; j < CHAIN_ELEMENTS; j++) {
                 String hashedValue = hashFunctionMD5(lastPassword);
                 lastPassword = reduceFunction(hashedValue, j);
+                /*
                 if (i == 0) {
                     System.out.println("Chain-Element: " + j+1);
                     System.out.println("Hashed Value: " + hashedValue);
                     System.out.println("Reduced Password: " + lastPassword);
                 }
+                 */
                 /*
                 if(j % 100 == 0) {
                     System.out.println("Element: " + j);
@@ -55,7 +62,9 @@ public class RainbowTable {
 
             // Für die nächste Kette benötigen wir das nächste Passwort (+1)
             password = nextPassword(password);
+            /*
             System.out.println("Next Password: " + password);
+             */
         }
 
         return rainbowTable;
@@ -130,10 +139,32 @@ public class RainbowTable {
         return -1;
     }
 
-    private static String findHash(String hashValue) {
-        // TODO
+    private static String findHash(String hashValue, Map<String, String> rainbowTable) {
+        // Input Hash in Reduktionsfunktion mit Stufe 2000
+        // Loop durch Endwerte der Tabelle
+        // Wenn gefunden dann ist man bei der richtigen Kette
+        // Wenn nichts gefunden weiter reduzieren mit Stufe -1
+        // So weiter bis richtige Kette gefunden
+        // Wenn richtige Kette gefunden dann ganze Kette durchrechnen, beginnen von Startwert bis gegebener Hashwert kommt
+        // Passwort vor gefundenem Hashwert zurückgeben
+
+        for (int i = CHAIN_AMOUNT; i >= 0; i--) {
+            String reducedValue = reduceFunction(hashValue, i);
+            for (int j = 0; j < CHAIN_ELEMENTS; j++) {
+                if (rainbowTable.containsKey(reducedValue)) {
+                    String startValue = rainbowTable.get(reducedValue);
+                    String tempHash = hashFunctionMD5(startValue);
+                    String tempReduce = "";
+                    int count = 0;
+                    while (!hashValue.equals(tempHash) && count < CHAIN_ELEMENTS) {
+                        tempReduce = reduceFunction(tempHash, j);
+                        tempHash = hashFunctionMD5(tempReduce);
+                        count++;
+                    }
+                    return tempReduce;
+                }
+            }
+        }
         return "";
     }
-
-
 }
