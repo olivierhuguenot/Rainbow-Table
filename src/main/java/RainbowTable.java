@@ -27,7 +27,7 @@ public class RainbowTable {
         String password = "0000000";
 
         // 2000 Ketten generieren
-        for(int i = 0; i < CHAIN_AMOUNT; i++) {
+        for (int i = 0; i < CHAIN_AMOUNT; i++) {
             String firstPassword = password;
             String lastPassword = firstPassword;
             /*
@@ -37,7 +37,7 @@ public class RainbowTable {
              */
 
             // 2000 Kettenelemente generieren
-            for(int j = 0; j < CHAIN_ELEMENTS; j++) {
+            for (int j = 0; j < CHAIN_ELEMENTS; j++) {
                 String hashedValue = hashFunctionMD5(lastPassword);
                 lastPassword = reduceFunction(hashedValue, j);
                 /*
@@ -139,32 +139,32 @@ public class RainbowTable {
         return -1;
     }
 
-    private static String findHash(String hashValue, Map<String, String> rainbowTable) {
-        // Input Hash in Reduktionsfunktion mit Stufe 2000
-        // Loop durch Endwerte der Tabelle
-        // Wenn gefunden dann ist man bei der richtigen Kette
-        // Wenn nichts gefunden weiter reduzieren mit Stufe -1
-        // So weiter bis richtige Kette gefunden
-        // Wenn richtige Kette gefunden dann ganze Kette durchrechnen, beginnen von Startwert bis gegebener Hashwert kommt
-        // Passwort vor gefundenem Hashwert zurückgeben
 
-        for (int i = CHAIN_AMOUNT; i >= 0; i--) {
-            String reducedValue = reduceFunction(hashValue, i);
-            for (int j = 0; j < CHAIN_ELEMENTS; j++) {
-                if (rainbowTable.containsKey(reducedValue)) {
-                    String startValue = rainbowTable.get(reducedValue);
-                    String tempHash = hashFunctionMD5(startValue);
-                    String tempReduce = "";
-                    int count = 0;
-                    while (!hashValue.equals(tempHash) && count < CHAIN_ELEMENTS) {
-                        tempReduce = reduceFunction(tempHash, j);
-                        tempHash = hashFunctionMD5(tempReduce);
-                        count++;
+    private static String findHash(String hashValue, Map<String, String> rainbowTable) {
+        // Beginn bei letzter Stufe (1999) dann rückwärts jede Stufe durchgehen
+        int lastColumn = CHAIN_ELEMENTS - 1;
+        for (int i = lastColumn; i >= 0; i--) {
+            String h = hashValue;
+            // Iteriere von aktueller Stufe bis zum Ende der Kette
+            for (int j = i; j < CHAIN_ELEMENTS; j++) {
+                String r = reduceFunction(h, j);
+                // Prüfe ob der reduzierte Hash in der Tabelle als Endwert vorkommt
+                if (rainbowTable.containsKey(r)) {
+                    // Holen des dazugehörigen Startwerts
+                    String startValue = rainbowTable.get(r);
+                    String reduceValue = startValue;
+                    // Kette von Startwert aus rekonstruieren und mit hashValue prüfen und wenn korrekt gesuchtes Passwort zurückgeben
+                    for (int k = 0; k < CHAIN_ELEMENTS; k++) {
+                        String tempHash = hashFunctionMD5(reduceValue);
+                        if (tempHash.equals(hashValue)) {
+                            return reduceValue;
+                        }
+                        reduceValue = reduceFunction(tempHash, k);
                     }
-                    return tempReduce;
                 }
+                h = hashFunctionMD5(r);
             }
         }
-        return "";
+        return "Kein Passwort zum Hashwert: " + hashValue + " gefunden.";
     }
 }
