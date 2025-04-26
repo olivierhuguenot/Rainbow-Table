@@ -72,8 +72,24 @@ public class RainbowTable {
 
 
     private static String reduceFunction(String hashedInput, int round) {
-        // TODO
-        return hashedInput;
+        // Z ist die Menge der Ziffern 1-9 und alle Kleinbuchstaben -> |Z| = 36
+        // L ist die Länge der Passwörter also 7
+        // H entspricht hashedInput
+        // Stufe entspricht der Variable round
+
+        // Stufe wird zum Hashwert addiert
+        BigInteger h = new BigInteger(hashedInput);
+        h = h.add(BigInteger.valueOf(round));
+
+        // Jedes Zeichen des Outputs wird durch mod und div mit PASSWORD_LENGTH ermittelt und dann in umgekehrter Reihenfolge zurückgegeben
+        char[] resultString = new char[PASSWORD_LENGTH];
+
+        for (int i = 0; i < PASSWORD_LENGTH; i++) {
+            int ri = h.mod(BigInteger.valueOf(Z.length)).intValue();
+            resultString[i] = Z[ri];
+            h = h.divide(BigInteger.valueOf(Z.length));
+        }
+        return new String(resultString);
     }
 
 
