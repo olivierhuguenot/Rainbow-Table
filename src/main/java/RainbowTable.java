@@ -15,6 +15,7 @@ public class RainbowTable {
         String wantedHash = "1d56a37fb6b08aa709fe90e12ca59e12";
         String password = findHash(wantedHash, rainbowTable);
         System.out.println("Wanted password: " + password);
+        System.out.println("(TEST) Found password as hash: " + hashFunctionMD5(password));
     }
 
     public static Map<String, String> generateRainbowTable() {
